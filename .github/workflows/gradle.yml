@@ -79,8 +79,13 @@ jobs:
     - name: Find Correct JAR
       id: findjar
       run: |
-        output="$(find build/libs/ ! -name "*-sources.jar" -type f -printf "%f\n")"
-        echo "::set-output name=jarname::$output"
+        JAR_FILE=$(find build/libs/ -name "*.jar" ! -name "*-sources.jar" -type f | head -n 1)
+        # 提取纯文件名（不带路径）
+        JAR_NAME=$(basename "$JAR_FILE")
+        # 使用新语法设置输出
+        echo "jarname=$JAR_NAME" >> $GITHUB_OUTPUT
+        # 调试输出
+        echo "Found JAR: $JAR_NAME"
         
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
